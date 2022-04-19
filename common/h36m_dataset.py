@@ -269,13 +269,13 @@ class Human36mDataset(MocapDataset):
             # Bring the skeleton to 16 joints instead of the original 32
             joints = []
             for i, x in enumerate(H36M_NAMES):
-                if x == '' or x == 'Neck/Nose':  # Remove 'Nose' to make SH and H36M 2D poses have the same dimension
+                if x == '': #or x == 'Neck/Nose':  # Remove 'Nose' to make SH and H36M 2D poses have the same dimension
                     joints.append(i)
             self.remove_joints(joints)
 
             # Rewire shoulders to the correct parents
-            self._skeleton._parents[10] = 8
-            self._skeleton._parents[13] = 8
+            self._skeleton._parents[11] = 8
+            self._skeleton._parents[14] = 8
 
             # Set joints group
             self._skeleton._joints_group = h36m_skeleton_joints_group

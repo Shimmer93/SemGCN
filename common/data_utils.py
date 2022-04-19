@@ -9,12 +9,18 @@ def create_2d_data(data_path, dataset):
     keypoints = np.load(data_path, allow_pickle=True)
     keypoints = keypoints['positions_2d'].item()
 
+    flag = True
     for subject in keypoints.keys():
         for action in keypoints[subject]:
             for cam_idx, kps in enumerate(keypoints[subject][action]):
                 # Normalize camera frame
+                if flag:
+                    print(kps.shape)
                 cam = dataset.cameras()[subject][cam_idx]
                 kps[..., :2] = normalize_screen_coordinates(kps[..., :2], w=cam['res_w'], h=cam['res_h'])
+                if flag:
+                    print(kps.shape)
+                    flag = False
                 keypoints[subject][action][cam_idx] = kps
 
     return keypoints
@@ -29,6 +35,7 @@ def read_3d_data(dataset):
             for cam in anim['cameras']:
                 pos_3d = world_to_camera(anim['positions'], R=cam['orientation'], t=cam['translation'])
                 pos_3d[:, :] -= pos_3d[:, :1]  # Remove global offset
+                #print(pos_3d[:, 0])
                 positions_3d.append(pos_3d)
             anim['positions_3d'] = positions_3d
 
@@ -62,6 +69,7 @@ def fetch(subjects, dataset, keypoints, action_filter=None, stride=1, parse_3d_p
                 assert len(poses_3d) == len(poses_2d), 'Camera count mismatch'
                 for i in range(len(poses_3d)):  # Iterate across cameras
                     out_poses_3d.append(poses_3d[i])
+                #print(poses_3d[0].shape)
 
     if len(out_poses_3d) == 0:
         out_poses_3d = None

@@ -169,6 +169,14 @@ def main(args):
     valid_loader = DataLoader(PoseGenerator(poses_valid, poses_valid_2d, actions_valid), batch_size=args.batch_size,
                               shuffle=False, num_workers=args.num_workers, pin_memory=True)
 
+    for p3d, p2d, ac in train_loader:
+        print(p2d.shape, p3d.shape)
+        print(p2d[0])
+        print(p3d[0])
+        break
+
+    return
+
     for epoch in range(start_epoch, args.epochs):
         print('\nEpoch: %d | LR: %.8f' % (epoch + 1, lr_now))
 

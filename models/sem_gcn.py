@@ -3,7 +3,7 @@ from __future__ import absolute_import
 import torch.nn as nn
 from models.sem_graph_conv import SemGraphConv
 from models.graph_non_local import GraphNonLocal
-
+import sys
 
 class _GraphConv(nn.Module):
     def __init__(self, adj, input_dim, output_dim, p_dropout=None):
@@ -60,7 +60,7 @@ class _GraphNonLocal(nn.Module):
 class SemGCN(nn.Module):
     def __init__(self, adj, hid_dim, coords_dim=(2, 3), num_layers=4, nodes_group=None, p_dropout=None):
         super(SemGCN, self).__init__()
-
+        print(adj.shape)
         _gconv_input = [_GraphConv(adj, coords_dim[0], hid_dim, p_dropout=p_dropout)]
         _gconv_layers = []
 
@@ -90,6 +90,10 @@ class SemGCN(nn.Module):
 
     def forward(self, x):
         out = self.gconv_input(x)
+        #print('in')
+        #sys.stdout.flush()
         out = self.gconv_layers(out)
+        #print('layers')
+        #sys.stdout.flush()
         out = self.gconv_output(out)
         return out
